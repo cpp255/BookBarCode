@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_add_book"
+        android:showAsAction="always"
+        android:title="@string/action_add"/>
+    
+    <item
+        android:id="@+id/action_search_book"
+        android:icon="@drawable/ic_ab_search_holo_dark"
+        android:showAsAction="always"
+        android:title="@string/action_search"/>
+    <item 
+        android:id="@+id/action_about"
+        android:title="@string/action_about"/>
+</menu>
