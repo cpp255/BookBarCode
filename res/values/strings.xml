@@ -156,4 +156,5 @@
 	<string name="action_about_title">About MyLibrary</string>
 	<string name="hint_findBooks">Search book</string>
 	<string name="msg_delete_bookinfo_confirm">Confirm delete?</string>
+	<string name="bookinfo_list_empty">No Books, please click add button.</string>
 </resources>

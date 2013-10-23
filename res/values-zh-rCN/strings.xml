@@ -168,4 +168,5 @@
     <string name="text_about_info">版本：1.0\n作者：JDK \n如果您有任何想法，请告诉我</string>
     <string name="hint_findBooks">搜索书籍</string>
     <string name="msg_delete_bookinfo_confirm">确认删除？</string>
+    <string name="bookinfo_list_empty">还没有任何书籍，请点击添加按钮进行添加。</string>
 </resources>
