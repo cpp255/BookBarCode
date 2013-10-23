@@ -1,134 +1,43 @@
 package com.cpp255.bookbarcode;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.cpp255.bookbarcode.Intents.ViewBookInfo;
-import com.cpp255.bookbarcode.book.BookInfo;
-import com.cpp255.bookbarcode.book.BookInfoColumns;
-import com.cpp255.bookbarcode.book.Utilities;
-import com.cpp255.bookbarcode.list.BooksViewAdapter;
-
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.app.ActionBar.LayoutParams;
 import android.app.ActionBar.Tab;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Browser.BookmarkColumns;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.SearchView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
-import android.widget.ListView;
 
-public class AllBookListActivity extends Activity implements
-		OnItemClickListener, LoaderCallbacks<Cursor> {
+public class AllBookListActivity extends Activity {
 	private static final String TAG = AllBookListActivity.class.getSimpleName();
 
-	// private List<BookInfo> mBookInfoList;
-	private ListView mListView;
 	private boolean mInSearchUi;
 	private SearchView mSearchView;
-
-	private static final String[] LIST_PROJECTION = { BookInfoColumns._ID,
-			BookInfoColumns.TITLE, BookInfoColumns.AUTHOR,
-			BookInfoColumns.THUMBNAILFILEPATH, };
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.all_bookinfo_list);
-		mListView = (ListView) findViewById(R.id.bookinfo_list);
-		mListView.setScrollBarStyle(ListView.SCROLLBARS_OUTSIDE_OVERLAY);
-		mListView.setOnItemClickListener(this);
-		// mBookInfoList = new ArrayList<BookInfo>();
-		// getAllBooks();
-		// bindData();
 		ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
 			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE,
 					ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE
-							| ActionBar.DISPLAY_SHOW_HOME);
+					| ActionBar.DISPLAY_SHOW_HOME);
 			actionBar.setTitle(R.string.all_book_info_title);
 		}
 	}
 
-	@Override
-	protected void onStart() {
-		getLoaderManager().initLoader(0, null, this);
-		super.onStart();
-	}
-
-	private void getAllBooks(Cursor cursor) {
-		List<BookInfo> mBookInfoList = new ArrayList<BookInfo>();
-		// Cursor cursor;
-		// cursor = managedQuery(BookInfoColumns.CONTENT_URI, null, null, null,
-		// null);
-		while (cursor.moveToNext()) {
-			BookInfo bookInfo = new BookInfo();
-			String str = cursor.getString(cursor
-					.getColumnIndex(BookInfoColumns.TITLE));
-			bookInfo.setTitle(str);
-			long bookID = cursor.getLong(cursor
-					.getColumnIndex(BookInfoColumns._ID));
-			bookInfo.set_id(bookID);
-			str = cursor.getString(cursor
-					.getColumnIndex(BookInfoColumns.AUTHOR));
-			bookInfo.setAuthor(str);
-			str = cursor.getString(cursor
-					.getColumnIndex(BookInfoColumns.THUMBNAILFILEPATH));
-			bookInfo.setThumbnailFilePath(str);
-			Bitmap bitmap = Utilities.getBitmapFromFile(str);
-			bookInfo.setThumbnail(bitmap);
-			mBookInfoList.add(bookInfo);
-		}
-
-		BooksViewAdapter mBooksViewAdapter = new BooksViewAdapter(this,
-				mBookInfoList);
-		if (mBooksViewAdapter != null) {
-			mListView.setAdapter(mBooksViewAdapter);
-		}
-	}
-
-	private void bindData() {
-		// BooksViewAdapter mBooksViewAdapter = new BooksViewAdapter(this,
-		// mBookInfoList);
-		// if(mBooksViewAdapter != null) {
-		// mListView.setAdapter(mBooksViewAdapter);
-		// }
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		Log.v("JDK", "id: " + id);
-		Uri bookUri = ContentUris.withAppendedId(BookInfoColumns.CONTENT_URI,
-				id);
-		Intent intent = new Intent(ViewBookInfo.VIEW_BOOKINFO_INTENT,
-				bookUri);
-		startActivity(intent);
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -336,32 +245,10 @@ public class AllBookListActivity extends Activity implements
     }
     
 	private void addBookInfo() {
-		Intent intent = new Intent(AllBookListActivity.this,
-				CaptureActivity.class);
+		Intent intent = new Intent(AllBookListActivity.this, CaptureActivity.class);
 		startActivity(intent);
 	}
 
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		Log.v("JDK", "onCreateLoader");
-		CursorLoader cursorLoader = new CursorLoader(this,
-				BookInfoColumns.CONTENT_URI, LIST_PROJECTION, null, null, null);
-		cursorLoader.setUpdateThrottle(1000);
-		return cursorLoader;
-	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		Log.v("JDK", "onLoadFinished");
-		getAllBooks(cursor);
-		bindData();
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
-
-	}
-	
 	@Override
 	public void onBackPressed() {
 		if(mInSearchUi) {
