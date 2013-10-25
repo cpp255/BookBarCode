@@ -11,7 +11,11 @@ public class BookInfoColumns implements BaseColumns{
      * The content:// style URL for this table
      */
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/bookinfo");
-
+    /**
+     * The content:// style URL for filtering this table on book title or author
+     */
+    public static final Uri CONTENT_FILTER_URI =
+            Uri.parse("content://" + AUTHORITY + "/bookinfo/filter");
     /**
      * The MIME type of {@link #CONTENT_URI} providing a directory of bookinfos.
      */

@@ -18,14 +18,16 @@ public class BookInfoProvider extends ContentProvider {
 	private BookDatabaseHelper DBhelper;
 
 	private static final int Books = 1;
-	private static final int Book = 2;
-
+	private static final int Book_ID = 2;
+	private static final int BOOKS_FILTER = 3;	//目前只匹配作者和图书名进行匹配
+	
 	private static final UriMatcher mUriMatcher;
 
 	static {
 		mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		mUriMatcher.addURI(BookInfoColumns.AUTHORITY, "bookinfo", Books);
-		mUriMatcher.addURI(BookInfoColumns.AUTHORITY, "bookinfo/#", Book);
+		mUriMatcher.addURI(BookInfoColumns.AUTHORITY, "bookinfo/#", Book_ID);
+		mUriMatcher.addURI(BookInfoColumns.AUTHORITY, "bookinfo/filter/*", BOOKS_FILTER);
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class BookInfoProvider extends ContentProvider {
 		case Books:
 			count = db.delete(BookDatabaseHelper.BOOKS_TABLE_NAME, selection, selectionArgs);
 			break;
-		case Book:
+		case Book_ID:
 			String bookID = uri.getPathSegments().get(1);
 			count = db.delete(BookDatabaseHelper.BOOKS_TABLE_NAME, BookInfoColumns._ID + "="
 					+ bookID + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "")
@@ -60,8 +62,10 @@ public class BookInfoProvider extends ContentProvider {
 		switch(mUriMatcher.match(uri)) {
 		case Books:
 			return BookInfoColumns.CONTENT_TYPE;
-		case Book:
+		case Book_ID:
 			return BookInfoColumns.CONTENT_ITEM_TYPE;
+		case BOOKS_FILTER:
+			return BookInfoColumns.CONTENT_TYPE;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -91,6 +95,7 @@ public class BookInfoProvider extends ContentProvider {
 			String[] selectionArgs, String sortOrder) {
 		Cursor cursor = null;
 		SQLiteDatabase db = DBhelper.getReadableDatabase();
+		String where;
 		
 		switch (mUriMatcher.match(uri)) {
 		case Books:
@@ -98,10 +103,19 @@ public class BookInfoProvider extends ContentProvider {
 					selection, selectionArgs, null, null, sortOrder);
 			cursor.setNotificationUri(getContext().getContentResolver(), uri);
 			return cursor;
-		case Book:
+		case Book_ID:
 			long bookid = ContentUris.parseId(uri);
-			String where = "_id=" + bookid;// 获取指定id的记录
+			where = "_id=" + bookid;// 获取指定id的记录
 			where += !TextUtils.isEmpty(selection) ? " and (" + selection + ")": "";// 把其它条件附加上
+			cursor = db.query(BookDatabaseHelper.BOOKS_TABLE_NAME, projection, where, selectionArgs, null,
+					null, sortOrder);
+			cursor.setNotificationUri(getContext().getContentResolver(), uri);
+			return cursor;
+		case BOOKS_FILTER:
+			String queryStr = uri.getPathSegments().get(2);
+			where = BookInfoColumns.TITLE + " like " + "'%" + queryStr + "%'";
+			where += " or " + BookInfoColumns.AUTHOR + " like " + "'%" + queryStr + "%'";
+			Log.v("JDK", "where" + where);
 			cursor = db.query(BookDatabaseHelper.BOOKS_TABLE_NAME, projection, where, selectionArgs, null,
 					null, sortOrder);
 			cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -120,7 +134,7 @@ public class BookInfoProvider extends ContentProvider {
 		case Books:
 			count = db.update(BookDatabaseHelper.BOOKS_TABLE_NAME, values, selection, selectionArgs);
 			break;
-		case Book:
+		case Book_ID:
 			String bookID = uri.getPathSegments().get(1);
 			count = db.update(BookDatabaseHelper.BOOKS_TABLE_NAME, values, BookInfoColumns._ID + "="
 					+ bookID + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
