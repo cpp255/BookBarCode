@@ -95,7 +95,7 @@ public class BookInfoProvider extends ContentProvider {
 			String[] selectionArgs, String sortOrder) {
 		Cursor cursor = null;
 		SQLiteDatabase db = DBhelper.getReadableDatabase();
-		String where;
+		StringBuilder where;
 		
 		switch (mUriMatcher.match(uri)) {
 		case Books:
@@ -105,18 +105,21 @@ public class BookInfoProvider extends ContentProvider {
 			return cursor;
 		case Book_ID:
 			long bookid = ContentUris.parseId(uri);
-			where = "_id=" + bookid;// 获取指定id的记录
-			where += !TextUtils.isEmpty(selection) ? " and (" + selection + ")": "";// 把其它条件附加上
-			cursor = db.query(BookDatabaseHelper.BOOKS_TABLE_NAME, projection, where, selectionArgs, null,
+			where = new StringBuilder();
+			where.append("_id = ").append(bookid);	// 获取指定id的记录
+			where.append(!TextUtils.isEmpty(selection) ? " and (" + selection + ")": "");	// 把其它条件附加上
+			cursor = db.query(BookDatabaseHelper.BOOKS_TABLE_NAME, projection, where.toString(), selectionArgs, null,
 					null, sortOrder);
 			cursor.setNotificationUri(getContext().getContentResolver(), uri);
 			return cursor;
 		case BOOKS_FILTER:
+			where = new StringBuilder();
 			String queryStr = uri.getPathSegments().get(2);
-			where = BookInfoColumns.TITLE + " like " + "'%" + queryStr + "%'";
-			where += " or " + BookInfoColumns.AUTHOR + " like " + "'%" + queryStr + "%'";
-			Log.v("JDK", "where" + where);
-			cursor = db.query(BookDatabaseHelper.BOOKS_TABLE_NAME, projection, where, selectionArgs, null,
+			where.append(BookInfoColumns.TITLE).append(" like ")
+				.append("'%").append(queryStr).append("%'");
+			where.append(" or ").append(BookInfoColumns.AUTHOR).append(" like ")
+				.append("'%").append(queryStr).append("%'");
+			cursor = db.query(BookDatabaseHelper.BOOKS_TABLE_NAME, projection, where.toString(), selectionArgs, null,
 					null, sortOrder);
 			cursor.setNotificationUri(getContext().getContentResolver(), uri);
 			return cursor;
