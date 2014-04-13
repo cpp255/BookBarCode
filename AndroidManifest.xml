@@ -34,8 +34,7 @@
     <uses-feature android:name="android.hardware.touchscreen" />
     <!-- TODO make this not required again after android.hardware.camera.any is available -->
     <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:minSdkVersion="11" />
 
     <application
         android:allowBackup="true"
