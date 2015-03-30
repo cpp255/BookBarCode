@@ -1,9 +1,9 @@
 package com.cpp255.bookbarcode;
 
-import com.cpp255.bookbarcode.Intents.ViewBookInfo;
 import com.cpp255.bookbarcode.book.BookInfo;
 import com.cpp255.bookbarcode.book.BookInfoColumns;
 import com.cpp255.bookbarcode.book.Utilities;
+import com.google.zxing.client.android.Intents.ViewBookInfo;
 
 import android.app.ActionBar;
 import android.app.Activity;

@@ -42,7 +42,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.cpp255.bookbarcode.CaptureActivity"
+            android:name="com.google.zxing.client.android.CaptureActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:launchMode="singleTask"
@@ -54,7 +54,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PreferencesActivity"
+            android:name="com.google.zxing.client.android.PreferencesActivity"
             android:label="@string/preferences_name"
             android:stateNotNeeded="true" >
         </activity>

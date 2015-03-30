@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cpp255.bookbarcode.R;
-import com.cpp255.bookbarcode.Intents.ViewBookInfo;
 import com.cpp255.bookbarcode.book.BookInfo;
 import com.cpp255.bookbarcode.book.BookInfoColumns;
 import com.cpp255.bookbarcode.book.Utilities;
+import com.google.zxing.client.android.Intents.ViewBookInfo;
 
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;

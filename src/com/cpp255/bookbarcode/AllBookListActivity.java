@@ -1,5 +1,7 @@
 package com.cpp255.bookbarcode;
 
+import com.google.zxing.client.android.CaptureActivity;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActionBar.LayoutParams;
@@ -19,6 +21,7 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
 
+@SuppressLint("NewApi")
 public class AllBookListActivity extends Activity {
 	private static final String TAG = AllBookListActivity.class.getSimpleName();
 
@@ -63,7 +66,9 @@ public class AllBookListActivity extends Activity {
 			startActivity(intent);
 			break;
 		case android.R.id.home:
-			exitSearchUi();
+			if (mSearchView != null) {
+				exitSearchUi();
+			}
 			break;
 		default:
 			super.onOptionsItemSelected(item);
